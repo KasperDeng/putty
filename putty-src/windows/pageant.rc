@@ -60,5 +60,5 @@ END
 #include "version.rc2"
 
 #ifndef NO_MANIFESTS
-1 RT_MANIFEST "pageant.mft"
+/*1 RT_MANIFEST "pageant.mft"*/
 #endif /* NO_MANIFESTS */

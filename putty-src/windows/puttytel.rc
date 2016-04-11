@@ -7,5 +7,5 @@
 
 #ifndef NO_MANIFESTS
 /* FIXME */
-1 RT_MANIFEST "putty.mft"
+/*1 RT_MANIFEST "putty.mft"*/
 #endif /* NO_MANIFESTS */
