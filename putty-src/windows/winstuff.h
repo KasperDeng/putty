@@ -460,6 +460,9 @@ void force_normal(HWND hwnd);
 void modal_about_box(HWND hwnd);
 void show_help(HWND hwnd);
 
+/* Title Change Enhancement by Kasper */
+void show_titlechange(HWND hwnd);
+/* end */
 /*
  * Exports from winmisc.c.
  */

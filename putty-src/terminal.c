@@ -93,6 +93,11 @@ const wchar_t sel_nl[] = SEL_NL;
  */
 #define CSET_OF(chr) (DIRECT_CHAR(chr)||DIRECT_FONT(chr) ? (chr)&CSET_MASK : 0)
 
+/* Added by Kasper */
+
+
+void duplicate_session_login(Terminal *term);
+/* end, Kasper */
 /*
  * Internal prototypes.
  */
@@ -5629,6 +5634,70 @@ void term_copyall(Terminal *term)
     bottom.x = term->cols;
     clipme(term, top, bottom, 0, TRUE);
 }
+
+/* Added by Kasper */
+void duplicate_session_login(Terminal *term)
+{  
+    char b[2048];
+    char c[30], *cl;
+    int freecl = FALSE;
+    BOOL inherit_handles;
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    HANDLE filemap = NULL;
+       
+    /*
+	 * Allocate a file-mapping memory chunk for the
+	 * config structure.
+	*/
+    SECURITY_ATTRIBUTES sa;
+	void *p;
+	int size;
+	
+	size = conf_serialised_size(term->conf);
+	
+    sa.nLength = sizeof(sa);
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+	filemap = CreateFileMapping(INVALID_HANDLE_VALUE,
+                                &sa,
+								PAGE_READWRITE,
+								0, size, NULL);
+	if (filemap && filemap != INVALID_HANDLE_VALUE) 
+	{
+	     p = (MapViewOfFile(filemap, FILE_MAP_WRITE, 0, 0, size));
+	     if (p) 
+	     {   
+	     	
+
+			conf_serialise(term->conf, p);  /* structure copy */
+	        UnmapViewOfFile(p);
+	     }	     	     
+	}
+	inherit_handles = TRUE;
+	sprintf(c, "putty &%p:%u", filemap, (unsigned)size);
+	cl = c;
+		 
+	GetModuleFileName(NULL, b, sizeof(b) - 1);
+	si.cb = sizeof(si);
+	si.lpReserved = NULL;
+	si.lpDesktop = NULL;
+	si.lpTitle = NULL;
+	si.dwFlags = 0;
+	si.cbReserved2 = 0;
+	si.lpReserved2 = NULL;
+	CreateProcess(b, cl, NULL, NULL, inherit_handles,
+			 NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
+			 CloseHandle(pi.hProcess);
+             CloseHandle(pi.hThread);
+		 
+	if (filemap)
+		CloseHandle(filemap);
+	if (freecl)
+	     sfree(cl);
+}
+/* end */
+
 
 /*
  * The wordness array is mainly for deciding the disposition of the

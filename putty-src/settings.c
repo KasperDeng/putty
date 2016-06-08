@@ -651,7 +651,14 @@ void save_open_settings(void *sesskey, Conf *conf)
     write_setting_i(sesskey, "ConnectionSharing", conf_get_int(conf, CONF_ssh_connection_sharing));
     write_setting_i(sesskey, "ConnectionSharingUpstream", conf_get_int(conf, CONF_ssh_connection_sharing_upstream));
     write_setting_i(sesskey, "ConnectionSharingDownstream", conf_get_int(conf, CONF_ssh_connection_sharing_downstream));
-    wmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys, FALSE);
+    /* Hot Key by Kasper */
+    write_setting_i(sesskey, "CleanScreen", conf_get_int(conf, CONF_f1_cleanscreen));
+	write_setting_i(sesskey, "CopyAll", conf_get_int(conf, CONF_f2_copyall));
+	write_setting_i(sesskey, "DuplicateSection", conf_get_int(conf, CONF_f3_duplicatesection));
+	write_setting_i(sesskey, "TitleChange", conf_get_int(conf, CONF_f4_titlechange));
+	/* end, Kasper */
+    
+	wmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys, FALSE);
 }
 
 void load_settings(char *section, Conf *conf)
@@ -1000,6 +1007,14 @@ void load_open_settings(void *sesskey, Conf *conf)
     gppi(sesskey, "ConnectionSharing", 0, conf, CONF_ssh_connection_sharing);
     gppi(sesskey, "ConnectionSharingUpstream", 1, conf, CONF_ssh_connection_sharing_upstream);
     gppi(sesskey, "ConnectionSharingDownstream", 1, conf, CONF_ssh_connection_sharing_downstream);
+	
+	/* Hot Key by Kasper */
+    gppi(sesskey, "CleanScreen", 0, conf, CONF_f1_cleanscreen);
+	gppi(sesskey, "CopyAll", 0, conf, CONF_f2_copyall);
+	gppi(sesskey, "DuplicateSection", 0, conf, CONF_f3_duplicatesection);
+	gppi(sesskey, "TitleChange", 0, conf, CONF_f4_titlechange);
+	/* end, Kasper */
+	
     gppmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys);
 }
 

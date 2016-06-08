@@ -966,3 +966,71 @@ void old_keyfile_warning(void)
     sfree(msg);
     sfree(title);
 }
+/* Title Change Enhancement by Kasper */
+static int CALLBACK ChangeTitleProc(HWND hwnd, UINT msg,
+			    WPARAM wParam, LPARAM lParam)
+{
+	char buf[120] = "";
+	char *pbuf = buf;
+    
+  switch (msg) 
+  {
+    case WM_INITDIALOG:
+	{
+      SetDlgItemText(hwnd, IDC_TITLE, pbuf);
+    }
+    return 1;
+
+    case WM_COMMAND:
+      switch (LOWORD(wParam)) 
+	  {
+        case IDC_TITLE:
+          if (HIWORD(wParam) == EN_CHANGE)
+		  {
+            if (SendMessage(GetDlgItem(hwnd, IDC_TITLE), WM_GETTEXTLENGTH, 0, 0L) == 0)
+			{
+               EnableWindow(GetDlgItem(hwnd, IDN_CHANGE), 0);
+			}
+		    else
+			{
+               EnableWindow(GetDlgItem(hwnd, IDN_CHANGE), 1);
+			}
+		  }
+          break;
+            
+        case IDN_CHANGE:
+          GetDlgItemText(hwnd, IDC_TITLE, pbuf, 120);
+		  set_title(NULL, pbuf);
+		  logbox = NULL;
+		  SetActiveWindow(GetParent(hwnd));
+		  DestroyWindow(hwnd);
+          return 0;
+
+		case IDCANCEL:
+		  logbox = NULL;
+		  SetActiveWindow(GetParent(hwnd));
+          DestroyWindow(hwnd);
+          return 0;
+	  }
+      return 0;
+
+    case WM_CLOSE:
+      logbox = NULL;
+      SetActiveWindow(GetParent(hwnd));
+      DestroyWindow(hwnd);
+      return 0;
+  }
+  return 0;
+}
+
+void show_titlechange(HWND hwnd)
+{
+   if (!logbox) {
+    term_deselect(term);
+    logbox = CreateDialog(hinst, MAKEINTRESOURCE(IDD_TITLECHANGE),
+                  hwnd, ChangeTitleProc);
+    ShowWindow(logbox, SW_SHOWNORMAL);
+    }
+    SetActiveWindow(logbox);
+}
+/* end*/

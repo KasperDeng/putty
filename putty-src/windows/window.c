@@ -42,6 +42,15 @@
 #define IDM_RECONF    0x0050
 #define IDM_CLRSB     0x0060
 #define IDM_RESET     0x0070
+
+/* One Key Cleaning Screen by Kasper */
+#define IDM_CLEAN     0x0080
+
+/* Title change by Kasper */
+#define IDM_CHNTITLE  0x0090
+
+/* end */
+
 #define IDM_HELP      0x0140
 #define IDM_ABOUT     0x0150
 #define IDM_SAVEDSESS 0x0160
@@ -834,6 +843,11 @@ int WINAPI WinMain(HINSTANCE inst, HINSTANCE prev, LPSTR cmdline, int show)
 	    AppendMenu(m, MF_ENABLED, IDM_COPYALL, "C&opy All to Clipboard");
 	    AppendMenu(m, MF_ENABLED, IDM_CLRSB, "C&lear Scrollback");
 	    AppendMenu(m, MF_ENABLED, IDM_RESET, "Rese&t Terminal");
+	    /* One Key Cleaning Screen by Kasper */
+	    AppendMenu(m, MF_ENABLED, IDM_CLEAN, "Clean Sc&reen");
+        AppendMenu(m, MF_SEPARATOR, 0, 0);
+        AppendMenu(m, MF_ENABLED, IDM_CHNTITLE, "Change &Title");
+	    /* end */
 	    AppendMenu(m, MF_SEPARATOR, 0, 0);
 	    AppendMenu(m, (conf_get_int(conf, CONF_resize_action)
 			   == RESIZE_DISABLED) ? MF_GRAYED : MF_ENABLED,
@@ -2427,6 +2441,22 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message,
 	    if (ldisc)
 		ldisc_send(ldisc, NULL, 0, 0);
 	    break;
+	    
+	  /* One Key Cleaning Screen by Kasper */
+	  case IDM_CLEAN:
+		term_pwron(term, TRUE);
+		if (ldisc)
+	    ldisc_send(ldisc, NULL, 0, 0);
+		term_clrsb(term);
+		break;
+	  /* end */
+	  
+	  /* Title change by Kasper */
+	  case IDM_CHNTITLE:
+		show_titlechange(hwnd);
+		break;
+	  /* end */
+	  
 	  case IDM_ABOUT:
 	    showabout(hwnd);
 	    break;
@@ -4219,6 +4249,28 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
  		flip_full_screen();
 	    return -1;
 	}
+	
+	/* Defining Hot Keys by Kasper */
+    if (wParam == VK_F1 && CONF_f1_cleanscreen)
+    {  
+		term_pwron(term, TRUE);
+		if (ldisc)
+			ldisc_send(ldisc, NULL, 0, 0);
+		term_clrsb(term);
+	}
+	if (wParam == VK_F2 && CONF_f2_copyall)
+    {  
+		term_copyall(term);
+	}
+    if (wParam == VK_F3 && CONF_f3_duplicatesection)
+    {   
+		duplicate_session_login(term);
+	}
+	if (wParam == VK_F4 && CONF_f4_titlechange)
+    {   
+		show_titlechange(hwnd);
+	}
+	
 	/* Control-Numlock for app-keypad mode switch */
 	if (wParam == VK_PAUSE && shift_state == 2) {
 	    term->app_keypad_keys ^= 1;
@@ -4426,16 +4478,29 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
 	code = 0;
 	switch (wParam) {
 	  case VK_F1:
-	    code = (keystate[VK_SHIFT] & 0x80 ? 23 : 11);
+		/* Changed by Kasper for using F1 key to clean screen */
+		if (!CONF_f1_cleanscreen)
+		{
+		    code = (keystate[VK_SHIFT] & 0x80 ? 23 : 11);
+		}
 	    break;
 	  case VK_F2:
-	    code = (keystate[VK_SHIFT] & 0x80 ? 24 : 12);
+		if (!CONF_f2_copyall)
+		{
+			code = (keystate[VK_SHIFT] & 0x80 ? 24 : 12);
+		}	    
 	    break;
 	  case VK_F3:
-	    code = (keystate[VK_SHIFT] & 0x80 ? 25 : 13);
+		if (!CONF_f3_duplicatesection)
+		{
+			code = (keystate[VK_SHIFT] & 0x80 ? 25 : 13);
+		}
 	    break;
 	  case VK_F4:
-	    code = (keystate[VK_SHIFT] & 0x80 ? 26 : 14);
+		if (!CONF_f4_titlechange)
+		{
+			code = (keystate[VK_SHIFT] & 0x80 ? 26 : 14);
+		}    	    
 	    break;
 	  case VK_F5:
 	    code = (keystate[VK_SHIFT] & 0x80 ? 28 : 15);

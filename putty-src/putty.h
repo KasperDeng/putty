@@ -868,6 +868,12 @@ void cleanup_exit(int);
     X(INT, NONE, shadowboldoffset) \
     X(INT, NONE, crhaslf) \
     X(STR, NONE, winclass) \
+    /* Added by Kasper */ \
+    X(INT, NONE, f1_cleanscreen) \
+    X(INT, NONE, f2_copyall) \
+    X(INT, NONE, f3_duplicatesection) \
+    X(INT, NONE, f4_titlechange) \
+    /* end, Kasper */
 
 /* Now define the actual enum of option keywords using that macro. */
 #define CONF_ENUM_DEF(valtype, keytype, keyword) CONF_ ## keyword,

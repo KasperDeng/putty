@@ -62,6 +62,12 @@
 #define WINHELP_CTX_window_erased "window.erased:config-erasetoscrollback"
 #define WINHELP_CTX_behaviour_closewarn "behaviour.closewarn:config-warnonclose"
 #define WINHELP_CTX_behaviour_altf4 "behaviour.altf4:config-altf4"
+/* Hot key enhancement by Kasper */
+#define WINHELP_CTX_behaviour_f1 "behaviour.f1:config-f1"
+#define WINHELP_CTX_behaviour_f2 "behaviour.f2:config-f2"
+#define WINHELP_CTX_behaviour_f3 "behaviour.f3:config-f3"
+#define WINHELP_CTX_behaviour_f4 "behaviour.f4:config-f4"
+/* end */
 #define WINHELP_CTX_behaviour_altspace "behaviour.altspace:config-altspace"
 #define WINHELP_CTX_behaviour_altonly "behaviour.altonly:config-altonly"
 #define WINHELP_CTX_behaviour_alwaysontop "behaviour.alwaysontop:config-alwaysontop"

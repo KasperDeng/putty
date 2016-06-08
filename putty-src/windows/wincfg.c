@@ -345,6 +345,20 @@ void win_setup_config_box(struct controlbox *b, HWND *hwndp, int has_help,
 		  HELPCTX(behaviour_altenter),
 		  conf_checkbox_handler,
 		  I(CONF_fullscreenonaltenter));
+	/* Hot Key enhancement by Kasper */
+	ctrl_checkbox(s, "Clean Screen on F1", '1',
+		  HELPCTX(behaviour_f1),
+		  conf_checkbox_handler, I(CONF_f1_cleanscreen));
+	ctrl_checkbox(s, "Copy all on F2", '2',
+		  HELPCTX(behaviour_f2),
+		  conf_checkbox_handler, I(CONF_f2_copyall));
+	ctrl_checkbox(s, "Duplicate Section on F3", '3',
+		  HELPCTX(behaviour_f3),
+		  conf_checkbox_handler, I(CONF_f3_duplicatesection));
+	ctrl_checkbox(s, "Change Title on F4", 'h',
+		  HELPCTX(behaviour_f4),
+		  conf_checkbox_handler, I(CONF_f4_titlechange));
+	/* end, Kasper */
 
     /*
      * Windows supports a local-command proxy. This also means we
