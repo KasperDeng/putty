@@ -8968,12 +8968,16 @@ static void do_ssh2_authconn(Ssh ssh, unsigned char *in, int inlen,
 	     * with change_username turned off we don't try to get
 	     * it again.
 	     */
-	} else if ((ssh->username = get_remote_username(ssh->conf)) == NULL) {
+	} else if (conf_get_int(ssh->conf, CONF_auto_login)) {
+		/* Added by Kasper */
+        ssh->username = conf_get_str(ssh->conf, CONF_login_user_name);
+        /* end, Kasper */
+    } else if ((ssh->username = get_remote_username(ssh->conf)) == NULL) {
 	    int ret; /* need not be kept over crReturn */
 	    s->cur_prompt = new_prompts(ssh->frontend);
 	    s->cur_prompt->to_server = TRUE;
 	    s->cur_prompt->name = dupstr("SSH login name");
-	    add_prompt(s->cur_prompt, dupstr("login as: "), TRUE); 
+	    add_prompt(s->cur_prompt, dupstr("login as: "), TRUE);
 	    ret = get_userpass_input(s->cur_prompt, NULL, 0);
 	    while (ret < 0) {
 		ssh->send_ok = 1;
@@ -9156,8 +9160,11 @@ static void do_ssh2_authconn(Ssh ssh, unsigned char *in, int inlen,
 		    in_commasep_string("publickey", methods, methlen);
 		s->can_passwd =
 		    in_commasep_string("password", methods, methlen);
+		/* Updated by Kasper */
 		s->can_keyb_inter = conf_get_int(ssh->conf, CONF_try_ki_auth) &&
-		    in_commasep_string("keyboard-interactive", methods, methlen);
+		    in_commasep_string("keyboard-interactive", methods, methlen) &&
+		    !conf_get_int(ssh->conf, CONF_auto_login);
+		/* end, Kasper */
 #ifndef NO_GSSAPI
                 if (conf_get_int(ssh->conf, CONF_try_gssapi_auth) &&
 		    in_commasep_string("gssapi-with-mic", methods, methlen)) {
@@ -9719,8 +9726,8 @@ static void do_ssh2_authconn(Ssh ssh, unsigned char *in, int inlen,
 		ssh2_pkt_addstring(s->pktout, "");	/* lang */
 		ssh2_pkt_addstring(s->pktout, "");	/* submethods */
 		ssh2_pkt_send(ssh, s->pktout);
-                
-                logevent("Attempting keyboard-interactive authentication");
+
+		logevent("Attempting keyboard-interactive authentication");
 
 		crWaitUntilV(pktin);
 		if (pktin->type != SSH2_MSG_USERAUTH_INFO_REQUEST) {

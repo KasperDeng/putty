@@ -19,6 +19,8 @@
 #include <commctrl.h>
 #include <commdlg.h>
 #include <shellapi.h>
+/* brian jiang */
+#include <shlwapi.h>
 
 #ifdef MSVC4
 #define TVINSERTSTRUCT  TV_INSERTSTRUCT
@@ -966,52 +968,169 @@ void old_keyfile_warning(void)
     sfree(msg);
     sfree(title);
 }
+
+/* brian */
+static int CALLBACK FindProc(HWND hwnd, UINT msg,
+                WPARAM wParam, LPARAM lParam)
+{
+  static WCHAR buf[120] = L"";
+  static int bMatchCase = 0;
+  static int bMatchWord = 0;
+  static int bUp = 1;
+
+  switch (msg) {
+  case WM_INITDIALOG:
+    {
+      SetDlgItemTextW(hwnd, IDC_FINDTEXT, buf);
+
+      bUp =1;
+      CheckDlgButton(hwnd, IDC_RADIOUP, BST_CHECKED);
+      /*
+        if (bUp)
+        CheckDlgButton(hwnd, IDC_RADIOUP, BST_CHECKED);
+        else
+        CheckDlgButton(hwnd, IDC_RADIODOWN, BST_CHECKED);
+      */
+
+      if (bMatchWord) CheckDlgButton(hwnd, IDC_CHECKMatchWord, BST_CHECKED);
+      else CheckDlgButton(hwnd, IDC_CHECKMatchWord, BST_UNCHECKED);
+
+      if (bMatchCase) CheckDlgButton(hwnd, IDC_CHECKMatchCase, BST_CHECKED);
+      else CheckDlgButton(hwnd, IDC_CHECKMatchCase, BST_UNCHECKED);
+    }
+
+    return 1;
+  case WM_COMMAND:
+    switch (LOWORD(wParam)) {
+    case IDOK:
+    case IDCANCEL:
+      logbox = NULL;
+      SetActiveWindow(GetParent(hwnd));
+      DestroyWindow(hwnd);
+      return 0;
+
+    case IDC_CHECKMatchCase:
+      bMatchCase = (IsDlgButtonChecked(hwnd, IDC_CHECKMatchCase))? 1 : 0;
+      break;
+
+    case IDC_CHECKMatchWord:
+      bMatchWord = (IsDlgButtonChecked(hwnd, IDC_CHECKMatchWord))? 1 : 0;
+      break;
+
+    case IDC_RADIOUP:
+      bUp = 1;
+      break;
+
+    case IDC_RADIODOWN:
+      bUp = 0;
+      break;
+
+    case IDC_FINDTEXT:
+      if (HIWORD(wParam) == EN_CHANGE){
+        if (SendMessage( GetDlgItem(hwnd, IDC_FINDTEXT), WM_GETTEXTLENGTH, 0, 0L) == 0){
+          EnableWindow(GetDlgItem(hwnd, IDN_FIND), 0);
+        }else{
+          EnableWindow(GetDlgItem(hwnd, IDN_FIND), 1);
+        }
+      }
+      break;
+
+    case IDN_FIND:
+
+      GetDlgItemTextW(hwnd, IDC_FINDTEXT, buf, 120);
+
+      /* if (wcslen(buf) == 0) break; */
+
+      switch (term_search(term, buf,
+                          bUp? 0 : 1,
+                          bMatchCase,
+                          bMatchWord
+                          )){
+      case 1:
+        /* SetWindowText(hwnd, "Find - reach the end"); */
+        MessageBox(hwnd, "Reach the end", "PuTTY", MB_OK | MB_ICONWARNING);
+        break;
+      case -1:
+        /* SetWindowText(hwnd, "Find - reach the beginning"); */
+        MessageBox(hwnd, "Reach the beginning", "PuTTY", MB_OK | MB_ICONWARNING);
+        break;
+        /*
+      case 0:
+        SetWindowText(hwnd, "Find");
+        break;
+        */
+      }
+
+      return 0;
+    }
+    return 0;
+  case WM_CLOSE:
+    logbox = NULL;
+    SetActiveWindow(GetParent(hwnd));
+    DestroyWindow(hwnd);
+    return 0;
+  }
+  return 0;
+}
+
+
+
+void show_find(HWND hwnd)
+{
+  if (!logbox) {
+    term_deselect(term);
+    logbox = CreateDialog(hinst, MAKEINTRESOURCE(IDD_FINDBOX),
+                          hwnd, FindProc);
+    ShowWindow(logbox, SW_SHOWNORMAL);
+  }
+  SetActiveWindow(logbox);
+}
 /* Title Change Enhancement by Kasper */
 static int CALLBACK ChangeTitleProc(HWND hwnd, UINT msg,
-			    WPARAM wParam, LPARAM lParam)
+                WPARAM wParam, LPARAM lParam)
 {
-	char buf[120] = "";
-	char *pbuf = buf;
+    char buf[120] = "";
+    char *pbuf = buf;
     
   switch (msg) 
   {
     case WM_INITDIALOG:
-	{
+    {
       SetDlgItemText(hwnd, IDC_TITLE, pbuf);
     }
     return 1;
 
     case WM_COMMAND:
       switch (LOWORD(wParam)) 
-	  {
+      {
         case IDC_TITLE:
           if (HIWORD(wParam) == EN_CHANGE)
-		  {
+          {
             if (SendMessage(GetDlgItem(hwnd, IDC_TITLE), WM_GETTEXTLENGTH, 0, 0L) == 0)
-			{
+            {
                EnableWindow(GetDlgItem(hwnd, IDN_CHANGE), 0);
-			}
-		    else
-			{
+            }
+            else
+            {
                EnableWindow(GetDlgItem(hwnd, IDN_CHANGE), 1);
-			}
-		  }
+            }
+          }
           break;
             
         case IDN_CHANGE:
           GetDlgItemText(hwnd, IDC_TITLE, pbuf, 120);
-		  set_title(NULL, pbuf);
-		  logbox = NULL;
-		  SetActiveWindow(GetParent(hwnd));
-		  DestroyWindow(hwnd);
-          return 0;
-
-		case IDCANCEL:
-		  logbox = NULL;
-		  SetActiveWindow(GetParent(hwnd));
+          set_title(NULL, pbuf);
+          logbox = NULL;
+          SetActiveWindow(GetParent(hwnd));
           DestroyWindow(hwnd);
           return 0;
-	  }
+
+        case IDCANCEL:
+          logbox = NULL;
+          SetActiveWindow(GetParent(hwnd));
+          DestroyWindow(hwnd);
+          return 0;
+      }
       return 0;
 
     case WM_CLOSE:

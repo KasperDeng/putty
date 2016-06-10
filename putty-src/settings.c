@@ -651,11 +651,19 @@ void save_open_settings(void *sesskey, Conf *conf)
     write_setting_i(sesskey, "ConnectionSharing", conf_get_int(conf, CONF_ssh_connection_sharing));
     write_setting_i(sesskey, "ConnectionSharingUpstream", conf_get_int(conf, CONF_ssh_connection_sharing_upstream));
     write_setting_i(sesskey, "ConnectionSharingDownstream", conf_get_int(conf, CONF_ssh_connection_sharing_downstream));
+
+    /* Auto login */
+    write_setting_i(sesskey, "AutoLogin", conf_get_int(conf, CONF_auto_login));
+    write_setting_s(sesskey, "AutoLoginUserName", conf_get_str(conf, CONF_login_user_name));
+    write_setting_s(sesskey, "AutoLoginUserPasswd", conf_get_str(conf, CONF_login_user_passwd));
+    /* end, auto login */
+
     /* Hot Key by Kasper */
     write_setting_i(sesskey, "CleanScreen", conf_get_int(conf, CONF_f1_cleanscreen));
 	write_setting_i(sesskey, "CopyAll", conf_get_int(conf, CONF_f2_copyall));
 	write_setting_i(sesskey, "DuplicateSection", conf_get_int(conf, CONF_f3_duplicatesection));
 	write_setting_i(sesskey, "TitleChange", conf_get_int(conf, CONF_f4_titlechange));
+    write_setting_i(sesskey, "FinxText", conf_get_int(conf, CONF_ctrl_f_findtext));
 	/* end, Kasper */
     
 	wmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys, FALSE);
@@ -1007,12 +1015,18 @@ void load_open_settings(void *sesskey, Conf *conf)
     gppi(sesskey, "ConnectionSharing", 0, conf, CONF_ssh_connection_sharing);
     gppi(sesskey, "ConnectionSharingUpstream", 1, conf, CONF_ssh_connection_sharing_upstream);
     gppi(sesskey, "ConnectionSharingDownstream", 1, conf, CONF_ssh_connection_sharing_downstream);
+    /* auto login */
+    gppi(sesskey, "AutoLogin", 0, conf, CONF_auto_login); /* not auto login by default */
+    gpps(sesskey, "AutoLoginUserName", "", conf, CONF_login_user_name);
+    gpps(sesskey, "AutoLoginUserPasswd", "", conf, CONF_login_user_passwd);
+    /* end, auto login */
 	
 	/* Hot Key by Kasper */
     gppi(sesskey, "CleanScreen", 0, conf, CONF_f1_cleanscreen);
 	gppi(sesskey, "CopyAll", 0, conf, CONF_f2_copyall);
 	gppi(sesskey, "DuplicateSection", 0, conf, CONF_f3_duplicatesection);
 	gppi(sesskey, "TitleChange", 0, conf, CONF_f4_titlechange);
+    gppi(sesskey, "FindText", 1, conf, CONF_ctrl_f_findtext); /* enable ctrl+f to find text by default */
 	/* end, Kasper */
 	
     gppmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys);

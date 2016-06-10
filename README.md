@@ -21,11 +21,14 @@ Source code from putty [official](http://www.chiark.greenend.org.uk/~sgtatham/pu
   - run `make -f Makefile.cyg`
 
 # Customization #
-  - Add Keyboard shortcuts (session panel -> windown -> behavior)
+  - Add Keyboard hotkeys (session panel -> windown -> behavior)
     + F1: one key clean screen
     + F2: one key copy all
     + F3: duplicate session
     + F4: change current window title
+    + ctrl+f: find text
+  - Add SSH auto login with user name and password
+  - Add find text
 
 # Other Useful Tips #
 * For login local cygwin
@@ -33,3 +36,7 @@ Source code from putty [official](http://www.chiark.greenend.org.uk/~sgtatham/pu
     - Project is dead, no longer maintained. The existing code only support cygwin1.5 and cygwin1.7. Now cygwin is going forward...
     - Great project. I even merged its source code to my putty. It can be replaced by cygtermd as describe in below bullet.
   * http://www.chiark.greenend.org.uk/~sgtatham/putty/wishlist/cygwin-terminal-window.html
+
+# Contributor #
+* Brian Jiang
+* Alan ZHU

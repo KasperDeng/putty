@@ -873,6 +873,11 @@ void cleanup_exit(int);
     X(INT, NONE, f2_copyall) \
     X(INT, NONE, f3_duplicatesection) \
     X(INT, NONE, f4_titlechange) \
+    X(INT, NONE, ctrl_f_findtext) \
+    /* Auto login */ \
+    X(INT, NONE, auto_login) \
+    X(STR, NONE, login_user_name) \
+    X(STR, NONE, login_user_passwd) \
     /* end, Kasper */
 
 /* Now define the actual enum of option keywords using that macro. */
@@ -1011,6 +1016,9 @@ void term_set_focus(Terminal *term, int has_focus);
 char *term_get_ttymode(Terminal *term, const char *mode);
 int term_get_userpass_input(Terminal *term, prompts_t *p,
 			    unsigned char *in, int inlen);
+
+/* brian jiang */
+int term_search(Terminal *term, wchar_t *pat, int direction, int match_case, int match_word);
 
 int format_arrow_key(char *buf, Terminal *term, int xkey, int ctrl);
 

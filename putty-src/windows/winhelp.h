@@ -67,6 +67,7 @@
 #define WINHELP_CTX_behaviour_f2 "behaviour.f2:config-f2"
 #define WINHELP_CTX_behaviour_f3 "behaviour.f3:config-f3"
 #define WINHELP_CTX_behaviour_f4 "behaviour.f4:config-f4"
+ #define WINHELP_CTX_behaviour_ctrl_f "behaviour.ctrl.f:config-ctrl-f"
 /* end */
 #define WINHELP_CTX_behaviour_altspace "behaviour.altspace:config-altspace"
 #define WINHELP_CTX_behaviour_altonly "behaviour.altonly:config-altonly"
@@ -83,6 +84,11 @@
 #define WINHELP_CTX_connection_username_from_env "connection.usernamefromenv:config-username-from-env"
 #define WINHELP_CTX_connection_keepalive "connection.keepalive:config-keepalive"
 #define WINHELP_CTX_connection_nodelay "connection.nodelay:config-nodelay"
+/* brian jiang */
+#define WINHELP_CTX_connection_autologin "connection..autologin:config-autologin"
+#define WINHELP_CTX_connection_autologinusername "connection..autologinusername:config-autologinusername"
+#define WINHELP_CTX_connection_autologinpasswd "connection..autologinpasswd:config-autologinpasswd"
+/* End, brian jiang */
 #define WINHELP_CTX_connection_ipversion "connection.ipversion:config-address-family"
 #define WINHELP_CTX_connection_tcpkeepalive "connection.tcpkeepalive:config-tcp-keepalives"
 #define WINHELP_CTX_connection_loghost "connection.loghost:config-loghost"

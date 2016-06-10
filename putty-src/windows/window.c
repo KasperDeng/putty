@@ -59,6 +59,10 @@
 #define IDM_PASTE     0x0190
 #define IDM_SPECIALSEP 0x0200
 
+/* Brian Jiang */
+#define IDM_LOG_SESSION      0x0230
+#define IDM_TURNOFF_LOG      0x0240
+#define IDM_FIND             0x0250
 #define IDM_SPECIAL_MIN 0x0400
 #define IDM_SPECIAL_MAX 0x0800
 
@@ -833,6 +837,9 @@ int WINAPI WinMain(HINSTANCE inst, HINSTANCE prev, LPSTR cmdline, int show)
 
 	    AppendMenu(m, MF_SEPARATOR, 0, 0);
 	    AppendMenu(m, MF_ENABLED, IDM_SHOWLOG, "&Event Log");
+	    AppendMenu(m, MF_SEPARATOR, 0, 0);
+        /* brian jiang */
+	    AppendMenu(m, MF_ENABLED, IDM_FIND, "&Find");
 	    AppendMenu(m, MF_SEPARATOR, 0, 0);
 	    AppendMenu(m, MF_ENABLED, IDM_NEWSESS, "Ne&w Session...");
 	    AppendMenu(m, MF_ENABLED, IDM_DUPSESS, "&Duplicate Session");
@@ -2159,6 +2166,10 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message,
 	  case IDM_SHOWLOG:
 	    showeventlog(hwnd);
 	    break;
+      /* brian Jiang */
+      case IDM_FIND:
+        show_find(hwnd);
+        break;
 	  case IDM_NEWSESS:
 	  case IDM_DUPSESS:
 	  case IDM_SAVEDSESS:
@@ -4253,24 +4264,29 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
 	/* Defining Hot Keys by Kasper */
     if (wParam == VK_F1 && CONF_f1_cleanscreen)
     {  
-		term_pwron(term, TRUE);
-		if (ldisc)
-			ldisc_send(ldisc, NULL, 0, 0);
-		term_clrsb(term);
-	}
-	if (wParam == VK_F2 && CONF_f2_copyall)
+        term_pwron(term, TRUE);
+        if (ldisc)
+            ldisc_send(ldisc, NULL, 0, 0);
+        term_clrsb(term);
+    }
+    if (wParam == VK_F2 && CONF_f2_copyall)
     {  
-		term_copyall(term);
-	}
+        term_copyall(term);
+    }
     if (wParam == VK_F3 && CONF_f3_duplicatesection)
     {   
-		duplicate_session_login(term);
-	}
-	if (wParam == VK_F4 && CONF_f4_titlechange)
+        duplicate_session_login(term);
+    }
+    if (wParam == VK_F4 && CONF_f4_titlechange)
     {   
-		show_titlechange(hwnd);
-	}
-	
+        show_titlechange(hwnd);
+    }
+    if ((keystate[VK_CONTROL] & 0x80) && wParam == 0x46)
+    {
+        // ctrl+f
+        show_find(hwnd);
+    }
+
 	/* Control-Numlock for app-keypad mode switch */
 	if (wParam == VK_PAUSE && shift_state == 2) {
 	    term->app_keypad_keys ^= 1;
@@ -5891,6 +5907,22 @@ int from_backend_eof(void *frontend)
 int get_userpass_input(prompts_t *p, unsigned char *in, int inlen)
 {
     int ret;
+    /* Added by Kasper */
+    static int get_user_name_once = 0;
+    int auto_login = conf_get_int(conf, CONF_auto_login);
+    BOOL is_ssh = conf_get_int(conf, CONF_protocol) == PROT_SSH;
+
+    if (auto_login && is_ssh) {
+        char *cmdline_password = NULL;
+        cmdline_password = conf_get_str(conf, CONF_login_user_passwd);
+        prompt_set_result(p->prompts[0], cmdline_password);
+        smemclr(cmdline_password, strlen(cmdline_password));
+        sfree(cmdline_password);
+        cmdline_password = NULL;
+        return 1;
+    }
+    /* end, Kasper */
+
     ret = cmdline_get_passwd_input(p, in, inlen);
     if (ret == -1)
 	ret = term_get_userpass_input(term, p, in, inlen);

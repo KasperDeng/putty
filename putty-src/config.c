@@ -1937,6 +1937,29 @@ void setup_config_box(struct controlbox *b, int midsession,
 	    }
 	}
 
+	/* Auto login, Kasper */
+	s = ctrl_getset(b, "Connection", "automate login",
+			"Automate login options");
+
+	ctrl_checkbox(s, "Enable automate login",
+		      'l', HELPCTX(connection_autologin),
+			  conf_checkbox_handler,
+			  I(CONF_auto_login));
+
+	ctrl_editbox(s, "Automate login username", 's', 50,
+		      HELPCTX(connection_autologinusername),
+		      conf_editbox_handler, I(CONF_login_user_name),
+		      I(1));
+
+
+	c = ctrl_editbox(s, "Password", 'v', 50,
+			  HELPCTX(connection_autologinpasswd),
+			  conf_editbox_handler,
+			  I(CONF_login_user_passwd),
+			  I(1));
+	c->editbox.password = 1;
+    /*  end, Kasper */
+
 	/*
 	 * A sub-panel Connection/Data, containing options that
 	 * decide on data to send to the server.

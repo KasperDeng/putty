@@ -72,4 +72,28 @@ END
 
 /* end, Kasper */
 
+/* Accelerators used: cf */
+IDD_FINDBOX DIALOG DISCARDABLE 100, 20, 240, 60
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Find"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Fi&nd what:",1024,5,7,60,12
+    EDITTEXT        IDC_FINDTEXT, 50, 5, 135, 12, ES_AUTOHSCROLL
+    DEFPUSHBUTTON "&Find", IDN_FIND, 190, 5, 44, 12
+    PUSHBUTTON "Close", IDOK, 190, 22, 44, 12
+
+    GROUPBOX        "Direction", 1024, 115, 23, 70, 30
+    CONTROL         "&Up", IDC_RADIOUP, "Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,120,36,20,10
+    CONTROL         "&Down", IDC_RADIODOWN, "Button",
+                    BS_AUTORADIOBUTTON, 150, 36, 30, 10
+
+    CONTROL         "Match &case", IDC_CHECKMatchCase, "Button", BS_AUTOCHECKBOX,
+                    5, 25, 52, 10
+
+    CONTROL         "Match &whole word only", IDC_CHECKMatchWord, "Button", BS_AUTOCHECKBOX,
+                    5,40,100,10
+END
+
 #include "version.rc2"

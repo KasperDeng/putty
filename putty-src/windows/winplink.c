@@ -148,6 +148,22 @@ int from_backend_eof(void *frontend_handle)
 int get_userpass_input(prompts_t *p, unsigned char *in, int inlen)
 {
     int ret;
+    /* Added by Kasper */
+	if (conf_get_int(conf, CONF_auto_login))
+    {
+       char *cmdline_password = NULL;
+       if (conf_get_int(conf, CONF_protocol) == PROT_SSH)
+          cmdline_password = dupstr(conf_get_str(conf, CONF_login_user_passwd));
+
+       strncpy(p->prompts[0]->result, cmdline_password,
+               p->prompts[0]->resultsize);
+       p->prompts[0]->result[p->prompts[0]->resultsize-1] = '\0';
+
+       memset(cmdline_password, 0, strlen(cmdline_password));
+
+       return 1;
+    }
+	/* end, Kasper */
     ret = cmdline_get_passwd_input(p, in, inlen);
     if (ret == -1)
 	ret = console_get_userpass_input(p, in, inlen);
