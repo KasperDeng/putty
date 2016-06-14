@@ -94,8 +94,6 @@ const wchar_t sel_nl[] = SEL_NL;
 #define CSET_OF(chr) (DIRECT_CHAR(chr)||DIRECT_FONT(chr) ? (chr)&CSET_MASK : 0)
 
 /* Added by Kasper */
-
-
 void duplicate_session_login(Terminal *term);
 /* end, Kasper */
 

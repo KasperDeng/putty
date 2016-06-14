@@ -5907,22 +5907,6 @@ int from_backend_eof(void *frontend)
 int get_userpass_input(prompts_t *p, unsigned char *in, int inlen)
 {
     int ret;
-    /* Added by Kasper */
-    static int get_user_name_once = 0;
-    int auto_login = conf_get_int(conf, CONF_auto_login);
-    BOOL is_ssh = conf_get_int(conf, CONF_protocol) == PROT_SSH;
-
-    if (auto_login && is_ssh) {
-        char *cmdline_password = NULL;
-        cmdline_password = conf_get_str(conf, CONF_login_user_passwd);
-        prompt_set_result(p->prompts[0], cmdline_password);
-        smemclr(cmdline_password, strlen(cmdline_password));
-        sfree(cmdline_password);
-        cmdline_password = NULL;
-        return 1;
-    }
-    /* end, Kasper */
-
     ret = cmdline_get_passwd_input(p, in, inlen);
     if (ret == -1)
 	ret = term_get_userpass_input(term, p, in, inlen);

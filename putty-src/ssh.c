@@ -9867,12 +9867,16 @@ static void do_ssh2_authconn(Ssh ssh, unsigned char *in, int inlen,
 
 	    } else if (s->can_passwd) {
 
+        int ret; /* not live over crReturn */
+        int changereq_first_time; /* not live over crReturn */
+
+        /* Added by Kasper */
+        if (conf_get_int(ssh->conf, CONF_auto_login)) {
+            s->password = conf_get_str(ssh->conf, CONF_login_user_passwd);
+        } else {
 		/*
 		 * Plain old password authentication.
 		 */
-		int ret; /* not live over crReturn */
-		int changereq_first_time; /* not live over crReturn */
-
 		ssh->pkt_actx = SSH2_PKTCTX_PASSWORD;
 
 		s->cur_prompt = new_prompts(ssh->frontend);
@@ -9906,6 +9910,7 @@ static void do_ssh2_authconn(Ssh ssh, unsigned char *in, int inlen,
 		 */
 		s->password = dupstr(s->cur_prompt->prompts[0]->result);
 		free_prompts(s->cur_prompt);
+        }
 
 		/*
 		 * Send the password packet.
