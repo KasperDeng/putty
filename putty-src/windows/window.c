@@ -4281,11 +4281,6 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
     {   
         show_titlechange(hwnd);
     }
-    if ((keystate[VK_CONTROL] & 0x80) && wParam == 0x46)
-    {
-        // ctrl+f
-        show_find(hwnd);
-    }
 
 	/* Control-Numlock for app-keypad mode switch */
 	if (wParam == VK_PAUSE && shift_state == 2) {

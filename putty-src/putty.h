@@ -873,7 +873,6 @@ void cleanup_exit(int);
     X(INT, NONE, f2_copyall) \
     X(INT, NONE, f3_duplicatesection) \
     X(INT, NONE, f4_titlechange) \
-    X(INT, NONE, ctrl_f_findtext) \
     /* Auto login */ \
     X(INT, NONE, auto_login) \
     X(STR, NONE, login_user_name) \

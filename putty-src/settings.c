@@ -663,7 +663,6 @@ void save_open_settings(void *sesskey, Conf *conf)
 	write_setting_i(sesskey, "CopyAll", conf_get_int(conf, CONF_f2_copyall));
 	write_setting_i(sesskey, "DuplicateSection", conf_get_int(conf, CONF_f3_duplicatesection));
 	write_setting_i(sesskey, "TitleChange", conf_get_int(conf, CONF_f4_titlechange));
-    write_setting_i(sesskey, "FinxText", conf_get_int(conf, CONF_ctrl_f_findtext));
 	/* end, Kasper */
     
 	wmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys, FALSE);

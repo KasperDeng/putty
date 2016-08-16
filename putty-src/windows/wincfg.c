@@ -358,9 +358,6 @@ void win_setup_config_box(struct controlbox *b, HWND *hwndp, int has_help,
 	ctrl_checkbox(s, "Change Title on F4", NULL,
 		  HELPCTX(behaviour_f4),
 		  conf_checkbox_handler, I(CONF_f4_titlechange));
-	ctrl_checkbox(s, "Find Text: ctrl+f", NULL,
-		  HELPCTX(behaviour_ctrl_f),
-		  conf_checkbox_handler, I(CONF_ctrl_f_findtext));
 	/* end, Kasper */
 
     /*
