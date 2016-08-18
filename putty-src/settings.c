@@ -1025,7 +1025,6 @@ void load_open_settings(void *sesskey, Conf *conf)
 	gppi(sesskey, "CopyAll", 0, conf, CONF_f2_copyall);
 	gppi(sesskey, "DuplicateSection", 0, conf, CONF_f3_duplicatesection);
 	gppi(sesskey, "TitleChange", 0, conf, CONF_f4_titlechange);
-    gppi(sesskey, "FindText", 1, conf, CONF_ctrl_f_findtext); /* enable ctrl+f to find text by default */
 	/* end, Kasper */
 	
     gppmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys);

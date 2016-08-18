@@ -26,7 +26,6 @@ Source code from putty [official](http://www.chiark.greenend.org.uk/~sgtatham/pu
     + F2: one key copy all
     + F3: duplicate session
     + F4: change current window title
-    + ctrl+f: find text
   - Add SSH auto login with user name and password
   - Add find text
 
