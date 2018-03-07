@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <limits.h>
+#include <shlwapi.h>
 
 #include <time.h>
 #include <assert.h>
