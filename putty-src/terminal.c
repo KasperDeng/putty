@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <limits.h>
+#include <shlwapi.h>
 
 #include <time.h>
 #include <assert.h>
@@ -7087,7 +7088,7 @@ int term_search(Terminal *term, wchar_t *pat, int direction, int match_case, int
       }
       else
       {
-        pos = StrRStrW(textbuf, lpLast , pat);
+        pos = my_StrRStrW(textbuf, lpLast , pat);
       }
 
       if (pos != NULL)
@@ -7116,7 +7117,7 @@ int term_search(Terminal *term, wchar_t *pat, int direction, int match_case, int
             }
             else
             {
-              pos = StrRStrW(textbuf, pos , pat);
+              pos = my_StrRStrW(textbuf, pos , pat);
             }
 
             if (pos == NULL) break;
